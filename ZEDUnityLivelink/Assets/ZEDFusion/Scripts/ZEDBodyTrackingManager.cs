@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// 
+///
 /// </summary>
 [DisallowMultipleComponent]
 public class ZEDBodyTrackingManager : MonoBehaviour
@@ -88,7 +88,7 @@ public class ZEDBodyTrackingManager : MonoBehaviour
         zedStreamingClient.OnNewDetection += UpdateSkeletonData;
     }
 
-	private void OnDestroy()
+    private void OnDestroy()
     {
         if (zedStreamingClient)
         {
@@ -96,17 +96,17 @@ public class ZEDBodyTrackingManager : MonoBehaviour
         }
     }
 
-	/// <summary>
-	/// Updates the skeleton data from ZEDCamera call and send it to Skeleton Handler script.
-	/// </summary>
+    /// <summary>
+    /// Updates the skeleton data from ZEDCamera call and send it to Skeleton Handler script.
+    /// </summary>
     private void UpdateSkeletonData(sl.Bodies bodies)
     {
-		List<int> remainingKeyList = new List<int>(avatarControlList.Keys);
-		List<sl.BodyData> newBodies = new List<sl.BodyData>(bodies.body_list);
+        List<int> remainingKeyList = new List<int>(avatarControlList.Keys);
+        List<sl.BodyData> newBodies = new List<sl.BodyData>(bodies.body_list);
 
         foreach (sl.BodyData bodyData in newBodies)
         {
-			int person_id = bodyData.id;
+            int person_id = bodyData.id;
 
             if (bodyData.tracking_state == sl.OBJECT_TRACK_STATE.OK)
             {
@@ -125,25 +125,28 @@ public class ZEDBodyTrackingManager : MonoBehaviour
                     {
                         SkeletonHandler handler = ScriptableObject.CreateInstance<SkeletonHandler>();
                         Vector3 spawnPosition = bodyData.position;
-                        handler.Create(avatars[Random.Range(0, avatars.Length)], bodies.body_format);
+
+                        // Assign an avatar to the new controller with person_id, not randomly
+                        handler.Create(avatars[person_id % avatars.Length], bodies.body_format);
+                        // handler.Create(avatars[Random.Range(0, avatars.Length)], bodies.body_format);
                         handler.InitSkeleton(person_id, new Material(skeletonBaseMaterial));
                         avatarControlList.Add(person_id, handler);
                         UpdateAvatarControl(handler, bodyData);
                     }
                 }
             }
-		}
+        }
 
         foreach (int index in remainingKeyList)
-		{
-			SkeletonHandler handler = avatarControlList[index];
-			handler.Destroy();
-			avatarControlList.Remove(index);
-		}
+        {
+            SkeletonHandler handler = avatarControlList[index];
+            handler.Destroy();
+            avatarControlList.Remove(index);
+        }
     }
 
-	public void Update()
-	{
+    public void Update()
+    {
         EnableSDKSkeleton = enableSDKSkeleton;
         OffsetSDKSkeleton = offsetSDKSkeleton;
         BodyTrackingFrequency = bodyTrackingFrequency;
