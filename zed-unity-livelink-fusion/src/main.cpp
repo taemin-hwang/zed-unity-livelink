@@ -115,13 +115,16 @@ int main(int argc, char **argv) {
     body_fusion_init_params.enable_body_fitting = true;
     fusion.enableBodyTracking(body_fusion_init_params);
 
-    // define fusion behavior 
+    // define fusion behavior
     sl::BodyTrackingFusionRuntimeParameters body_tracking_runtime_parameters;
     // be sure that the detection skeleton is complete enough
     body_tracking_runtime_parameters.skeleton_minimum_allowed_keypoints = 7;
 
     // we can also want to retrieve skeleton seen by multiple camera, in this case at least half of them
     body_tracking_runtime_parameters.skeleton_minimum_allowed_camera = cameras.size() / 2.;
+
+    // make skeleton smooth
+    body_tracking_runtime_parameters.skeleton_smoothing = 0.05;
 
 #if DISPLAY_OGL
     GLViewer viewer;
@@ -377,12 +380,12 @@ nlohmann::json bodyDataToJson(sl::BodyData body)
     res["velocity"]["y"] = isnan(body.velocity.y) ? 0 : body.velocity.y / 1000;
     res["velocity"]["z"] = isnan(body.velocity.z) ? 0 : body.velocity.z / 1000;
     //res["position_covariance"] = nlohmann::json::array();
-    //for (auto& i : body.position_covariance) 
+    //for (auto& i : body.position_covariance)
     // {
     //    res["position_covariance"].push_back(i);
     //}
     //res["bounding_box_2d"] = nlohmann::json::array();
-    //for (auto& i : body.bounding_box_2d) 
+    //for (auto& i : body.bounding_box_2d)
     // {
     //    nlohmann::json e;
     //    e["x"] = i.x;
@@ -403,7 +406,7 @@ nlohmann::json bodyDataToJson(sl::BodyData body)
     res["dimensions"]["y"] = isnan(body.dimensions.y) ? 0 : body.dimensions.y / 1000;
     res["dimensions"]["z"] = isnan(body.dimensions.z) ? 0 : body.dimensions.z / 1000;
     //res["keypoint_2d"] = nlohmann::json::array();
-    //for (auto& i : body.keypoint_2d) 
+    //for (auto& i : body.keypoint_2d)
     // {
     //    nlohmann::json e;
     //    e["x"] = i.x;
@@ -420,7 +423,7 @@ nlohmann::json bodyDataToJson(sl::BodyData body)
     }
     std::cout << "id [" << body.id << "] hips: " << body.keypoint[0] << std::endl;
     //res["head_bounding_box_2d"] = nlohmann::json::array();
-    //for (auto& i : body.head_bounding_box_2d) 
+    //for (auto& i : body.head_bounding_box_2d)
     // {
     //    nlohmann::json e;
     //    e["x"] = i.x;
