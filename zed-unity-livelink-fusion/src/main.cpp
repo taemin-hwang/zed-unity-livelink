@@ -19,7 +19,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 // OpenGL Viewer(!=0) or no viewer (0)
-#define DISPLAY_OGL 1
+#define DISPLAY_OGL 0
 
 // ZED include
 #include "SenderRunner.hpp"
