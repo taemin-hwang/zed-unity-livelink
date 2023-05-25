@@ -1,0 +1,8 @@
+{
+    "addr"       : "230.0.0.1",
+    "port"       : 20001,
+    "viewer"     : "on",
+    "resolution" : "HD720",
+    "fps"        : 30,
+    "accuracy"   : 2
+}

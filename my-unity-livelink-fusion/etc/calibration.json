@@ -1,0 +1,56 @@
+{
+    "27878472": {
+        "input": {
+            "fusion": {
+                "configuration": {
+                    "ip": "192.168.0.12",
+                    "port": 30020
+                },
+                "type": "LOCAL_NETWORK"
+            },
+            "zed": {
+                "configuration": "0",
+                "type": ""
+            }
+        },
+        "world": {
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "translation": [
+                0.0,
+                0.33298251032829285,
+                0.0
+            ]
+        }
+    },
+    "35298497": {
+        "input": {
+            "fusion": {
+                "configuration": {
+                    "ip": "192.168.0.7",
+                    "port": 30020
+                },
+                "type": "LOCAL_NETWORK"
+            },
+            "zed": {
+                "configuration": "0",
+                "type": ""
+            }
+        },
+        "world": {
+            "rotation": [
+                -0.010526593774557114,
+                1.0859215259552002,
+                0.02694573998451233
+            ],
+            "translation": [
+                -0.864879310131073,
+                0.23026752471923828,
+                0.5617924332618713
+            ]
+        }
+    }
+}
