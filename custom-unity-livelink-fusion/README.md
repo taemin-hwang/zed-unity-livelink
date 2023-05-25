@@ -6,7 +6,7 @@
 ./run_build
 ```
 
-### How to configure
+## How to configure
 ```
 cd etc
 cat config.json
@@ -18,7 +18,7 @@ cat config.json
 - **fps** : target fps
 - **accuracy** : fast(0), medium(1), accurate(2)
 
-### How to run
+## How to run
 ```
 cd build
 ./Custom-LiveLink-Fusion ../etc/calibration.json # Need to use your own calibration file
