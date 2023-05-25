@@ -12,30 +12,18 @@ bool LiveLinker::Initialize(int argc, char **argv)
 {
     std::cout << "LiveLinker::Initialize()" << std::endl;
 
-    argc_ = argc;
-    argv_ = argv;
+    args_ = parseArguments(argc, argv);
 
-    if (argc_ != 2)
-    {
-        std::cout << "Need a Localization file in input" << std::endl;
+    if (args_.calibrationFile.size() == 0 && args_.logDirectory.size() == 0) {
+        std::cout << "Error: Cannot specify both calibration file and log directory" << std::endl;
+        std::cout << "  - Usage: ./LiveLinker -c calibration_file.json" << std::endl;
+        std::cout << "  - Usage: ./LiveLinker -l log_directory" << std::endl;
         return EXIT_FAILURE;
     }
 
-    std::string json_config_filename = "";
-    try
-    {
-        json_config_filename = std::string(argv_[1]);
-    }
-    catch (std::exception &e)
-    {
-        std::cout << "Error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+    auto configurations = sl::readFusionConfigurationFile(args_.calibrationFile, COORDINATE_SYSTEM, UNIT);
 
-    auto configurations = sl::readFusionConfigurationFile(json_config_filename, COORDINATE_SYSTEM, UNIT);
-
-    if (configurations.empty())
-    {
+    if (configurations.empty()) {
         std::cout << "Empty configuration File." << std::endl;
         return EXIT_FAILURE;
     }
@@ -103,12 +91,30 @@ bool LiveLinker::Initialize(int argc, char **argv)
     // initialize the viewer
     if (is_enable_viewer_)
     {
-        viewer_.init(argc_, argv_);
+        viewer_.init(argc, argv);
     }
 
     is_initialized_ = true;
 
     return EXIT_SUCCESS;
+}
+
+Arguments LiveLinker::parseArguments(int argc, char* argv[]) {
+    Arguments args;
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "-c" && i + 1 < argc) {
+            args.calibrationFile = argv[++i];
+        } else if (arg == "-l" && i + 1 < argc) {
+            args.logDirectory = argv[++i];
+        } else {
+            // Handle unrecognized argument or invalid usage
+            std::cout << "Invalid argument: " << arg << std::endl;
+            // Print usage or show error message
+            exit(1);
+        }
+    }
+    return args;
 }
 
 /// ----------------------------------------------------------------------------

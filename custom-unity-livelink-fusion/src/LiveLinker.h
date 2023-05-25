@@ -23,6 +23,12 @@ static const sl::UNIT UNIT = sl::UNIT::METER;
 static const sl::BODY_TRACKING_MODEL BODY_MODEL = sl::BODY_TRACKING_MODEL::HUMAN_BODY_ACCURATE;
 static const sl::BODY_FORMAT BODY_FORMAT = sl::BODY_FORMAT::BODY_70;
 
+struct Arguments {
+    std::string calibrationFile = "";
+    std::string logDirectory = "";
+    // Add more argument fields as needed
+};
+
 class LiveLinker {
 public:
     LiveLinker();
@@ -33,12 +39,14 @@ public:
     void Stop();
 
 private:
+    Arguments parseArguments(int argc, char* argv[]);
     nlohmann::json getJson(sl::FusionMetrics metrics, sl::Bodies& bodies, sl::BODY_FORMAT body_format);
     nlohmann::json bodyDataToJson(sl::BodyData body);
     nlohmann::json bodyDataToJsonMeter(sl::BodyData body);
     void print(string msg_prefix, sl::ERROR_CODE err_code = sl::ERROR_CODE::SUCCESS, string msg_suffix = "");
 
 private:
+    Arguments args_;
     std::vector<sl::CameraIdentifier> cameras_;
     std::vector<SenderRunner> clients_;
     GLViewer viewer_;
@@ -49,9 +57,6 @@ private:
     std::string ip_addr = "";
     int port = 0;
     bool is_enable_viewer_ = false;
-
-    int argc_;
-    char **argv_;
 };
 
 #endif // _LIVE_LINKER_H_
