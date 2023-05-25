@@ -1,9 +1,10 @@
 #include "LiveLinker.h"
 #include <utility>
 
-LiveLinker::LiveLinker() {
+LiveLinker::LiveLinker()
+{
     config_parser_ = std::make_shared<ConfigParser>("../etc/config.json");
-    logger_ = std::make_unique<SkeletonLogger>();
+    skeleton_logger_ = std::make_unique<SkeletonLogger>();
 
     is_enable_viewer_ = config_parser_->IsViewerOn();
 }
@@ -14,84 +15,86 @@ bool LiveLinker::Initialize(int argc, char **argv)
 
     args_ = parseArguments(argc, argv);
 
-    if (args_.calibrationFile.size() == 0 && args_.logDirectory.size() == 0) {
-        std::cout << "Error: Cannot specify both calibration file and log directory" << std::endl;
-        std::cout << "  - Usage: ./LiveLinker -c calibration_file.json" << std::endl;
-        std::cout << "  - Usage: ./LiveLinker -l log_directory" << std::endl;
+    if (args_.is_playback == false && args_.is_streaming == false) {
+        std::cout << "You need to choose between streaming or playback mode" << std::endl;
+        std::cout << "  - Usage: ./LiveLinker -rs calibration_file.json" << std::endl;
+        std::cout << "  - Usage: ./LiveLinker -s calibration_file.json" << std::endl;
+        std::cout << "  - Usage: ./LiveLinker -p log_directory" << std::endl;
         return EXIT_FAILURE;
-    }
+    } else if (args_.is_streaming == true) { // streaming mode
+        auto configurations = sl::readFusionConfigurationFile(args_.calibrationFile, COORDINATE_SYSTEM, UNIT);
 
-    auto configurations = sl::readFusionConfigurationFile(args_.calibrationFile, COORDINATE_SYSTEM, UNIT);
-
-    if (configurations.empty()) {
-        std::cout << "Empty configuration File." << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    // initialize the ZED camera
-    for (int i = 0; i < configurations.size(); ++i) {
-        SenderRunner obj(config_parser_);
-        clients_.emplace_back(std::move(obj));
-    }
-
-    int id_ = 0;
-    for (auto conf : configurations)
-    {
-        // if the ZED camera should run locally, then start a thread to handle it
-        if (conf.communication_parameters.getType() == sl::CommunicationParameters::COMM_TYPE::INTRA_PROCESS)
-        {
-            std::cout << "Try to open ZED " << conf.serial_number << ".." << std::flush;
-            auto state = clients_[id_++].open(conf.input_type, BODY_FORMAT);
-            if (state)
-                std::cout << ". ready !" << std::endl;
+        if (configurations.empty()) {
+            std::cout << "Empty configuration File." << std::endl;
+            return EXIT_FAILURE;
         }
-        else
-            std::cout << "Try to open ZED " << conf.serial_number << " over a local network" << std::endl;
-    }
 
-    // start camera threads
-    for (auto &it : clients_)
-        it.start();
+        // initialize the ZED camera
+        for (int i = 0; i < configurations.size(); ++i) {
+            SenderRunner obj(config_parser_);
+            clients_.emplace_back(std::move(obj));
+        }
 
-    // Now that the ZED camera are running, we need to initialize the fusion module
-    sl::InitFusionParameters init_params;
-    init_params.coordinate_units = UNIT;
-    init_params.coordinate_system = COORDINATE_SYSTEM;
-    init_params.verbose = true;
+        int id_ = 0;
+        for (auto conf : configurations) {
+            // if the ZED camera should run locally, then start a thread to handle it
+            if (conf.communication_parameters.getType() == sl::CommunicationParameters::COMM_TYPE::INTRA_PROCESS) {
+                std::cout << "Try to open ZED " << conf.serial_number << ".." << std::flush;
+                auto state = clients_[id_++].open(conf.input_type, BODY_FORMAT);
+                if (state)
+                    std::cout << ". ready !" << std::endl;
+            } else
+                std::cout << "Try to open ZED " << conf.serial_number << " over a local network" << std::endl;
+        }
 
-    // initialize it
-    fusion_.init(init_params);
+        // start camera threads
+        for (auto &it : clients_)
+            it.start();
 
-    // subscribe to every cameras of the setup to internally gather their data
-    for (auto &it : configurations)
-    {
-        sl::CameraIdentifier uuid(it.serial_number);
-        // to subscribe to a camera you must give its serial number, the way to communicate with it (shared memory or local network), and its world pose in the setup.
-        auto state = fusion_.subscribe(uuid, it.communication_parameters, it.pose);
-        if (state != sl::FUSION_ERROR_CODE::SUCCESS)
-            std::cout << "Unable to subscribe to " << std::to_string(uuid.sn) << " . " << state << std::endl;
-        else
-            cameras_.push_back(uuid);
-    }
+        // Now that the ZED camera are running, we need to initialize the fusion module
+        sl::InitFusionParameters init_params;
+        init_params.coordinate_units = UNIT;
+        init_params.coordinate_system = COORDINATE_SYSTEM;
+        init_params.verbose = true;
 
-    // check that at least one camera is connected
-    if (cameras_.empty())
-    {
-        std::cout << "no connections " << std::endl;
-        return EXIT_FAILURE;
-    }
+        // initialize it
+        fusion_.init(init_params);
 
-    // as this sample shows how to fuse body detection from the multi camera setup
-    // we enable the Body Tracking module with its options
-    sl::BodyTrackingFusionParameters body_fusion_init_params;
-    body_fusion_init_params.enable_tracking = true;
-    body_fusion_init_params.enable_body_fitting = true;
-    fusion_.enableBodyTracking(body_fusion_init_params);
+        // subscribe to every cameras of the setup to internally gather their data
+        for (auto &it : configurations) {
+            sl::CameraIdentifier uuid(it.serial_number);
+            // to subscribe to a camera you must give its serial number, the way to communicate with it (shared memory or local network), and its world pose in the setup.
+            auto state = fusion_.subscribe(uuid, it.communication_parameters, it.pose);
+            if (state != sl::FUSION_ERROR_CODE::SUCCESS)
+                std::cout << "Unable to subscribe to " << std::to_string(uuid.sn) << " . " << state << std::endl;
+            else
+                cameras_.push_back(uuid);
+        }
 
-    // initialize the viewer
-    if (is_enable_viewer_)
-    {
-        viewer_.init(argc, argv);
+        // check that at least one camera is connected
+        if (cameras_.empty()) {
+            std::cout << "no connections " << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        // as this sample shows how to fuse body detection from the multi camera setup
+        // we enable the Body Tracking module with its options
+        sl::BodyTrackingFusionParameters body_fusion_init_params;
+        body_fusion_init_params.enable_tracking = true;
+        body_fusion_init_params.enable_body_fitting = true;
+        fusion_.enableBodyTracking(body_fusion_init_params);
+
+        // initialize the viewer
+        if (is_enable_viewer_) {
+            viewer_.init(argc, argv);
+        }
+
+        if (args_.is_recording) {
+            skeleton_logger_->initialize();
+        }
+
+    } else { // playback mode
+
     }
 
     is_initialized_ = true;
@@ -99,15 +102,37 @@ bool LiveLinker::Initialize(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-Arguments LiveLinker::parseArguments(int argc, char* argv[]) {
+Arguments LiveLinker::parseArguments(int argc, char *argv[])
+{
     Arguments args;
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 1; i < argc; ++i)
+    {
         std::string arg = argv[i];
-        if (arg == "-c" && i + 1 < argc) {
+        if (arg == "-s" && i + 1 < argc)
+        {
             args.calibrationFile = argv[++i];
-        } else if (arg == "-l" && i + 1 < argc) {
+            args.is_streaming = true;
+        }
+        else if (arg == "-p" && i + 1 < argc)
+        {
             args.logDirectory = argv[++i];
-        } else {
+            args.is_playback = true;
+        }
+        else if (arg == "-rs" && i + 1 < argc)
+        {
+            args.calibrationFile = argv[++i];
+            args.is_recording = true;
+            args.is_streaming = true;
+        }
+        else if (arg == "-h")
+        {
+            std::cout << "Usage: ./LiveLinker -s calibration_file.json" << std::endl;
+            std::cout << "Usage: ./LiveLinker -rs calibration_file.json" << std::endl;
+            std::cout << "Usage: ./LiveLinker -p log_directory" << std::endl;
+            exit(0);
+        }
+        else
+        {
             // Handle unrecognized argument or invalid usage
             std::cout << "Invalid argument: " << arg << std::endl;
             // Print usage or show error message
@@ -126,10 +151,23 @@ bool LiveLinker::Start()
 {
     if (!is_initialized_) {
         std::cout << "LiveLinker::Start() failed. Not initialized." << std::endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
     std::cout << "LiveLinker::Start()" << std::endl;
+
+    if (args_.is_streaming) {
+        return StartStreaming();
+    } else if (args_.is_playback) {
+        return StartPlayback();
+    } else {
+        return EXIT_FAILURE;
+    }
+}
+
+bool LiveLinker::StartStreaming()
+{
+    std::cout << "LiveLinker::StartStreaming()" << std::endl;
     // define fusion behavior
     sl::BodyTrackingFusionRuntimeParameters body_tracking_runtime_parameters;
     // be sure that the detection skeleton is complete enough
@@ -157,9 +195,6 @@ bool LiveLinker::Start()
 
     sock.setMulticastTTL(1);
 
-    // servAddress = "230.0.0.1";
-    // servPort = 20001;
-
     std::cout << "Sending fused data at " << servAddress << ":" << servPort << std::endl;
 
     // run the fusion as long as the viewer is available.
@@ -185,9 +220,10 @@ bool LiveLinker::Start()
                     // ----------------------------------
                     std::string data_to_send = getJson(metrics, fused_bodies, fused_bodies.body_format).dump();
                     sock.sendTo(data_to_send.data(), data_to_send.size(), servAddress, servPort);
-                }
-                catch (SocketException &e) {
-
+                    if (args_.is_recording) {
+                        skeleton_logger_->writeLoggingFile(data_to_send);
+                    }
+                } catch (SocketException &e) {
                     cerr << e.what() << endl;
                 }
             }
@@ -207,6 +243,48 @@ bool LiveLinker::Start()
         it.stop();
 
     fusion_.close();
+
+    return EXIT_SUCCESS;
+}
+
+bool LiveLinker::StartPlayback()
+{
+    std::cout << "LiveLinker::StartPlayback()" << std::endl;
+
+    bool run = true;
+
+    // ----------------------------------
+    // UDP to Unity----------------------
+    // ----------------------------------
+    std::string servAddress = config_parser_->GetAddress();
+    int servPort = config_parser_->GetPort();
+    UDPSocket sock;
+
+    sock.setMulticastTTL(1);
+
+    std::cout << "Sending fused data at " << servAddress << ":" << servPort << std::endl;
+
+    int frameNum = 0;
+
+    // run the fusion as long as the viewer is available.
+    while (run) {
+        try {
+            // ----------------------------------
+            // UDP to Unity----------------------
+            // ----------------------------------
+            std::string data_to_send = skeleton_logger_->readLoggingFile(args_.logDirectory, frameNum++);
+            sock.sendTo(data_to_send.data(), data_to_send.size(), servAddress, servPort);
+        } catch (SocketException &e) {
+            cerr << e.what() << endl;
+        }
+
+        sl::sleep_ms(33.33);
+    }
+
+    if (is_enable_viewer_)
+    {
+        viewer_.exit();
+    }
 
     return EXIT_SUCCESS;
 }

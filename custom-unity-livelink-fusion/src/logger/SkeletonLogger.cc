@@ -4,6 +4,7 @@
 #include <fstream>
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 void SkeletonLogger::initialize()
@@ -11,14 +12,19 @@ void SkeletonLogger::initialize()
     isInitialized_ = true;
 
     // Create logging directory
-    createLoggingDirectory("log");
-    createLoggingDirectory("log/"+getFormattedDateTime());
+    createLoggingDirectory("../log");
+    loggingPath_ = "../log/" + getFormattedDateTime();
+    createLoggingDirectory(loggingPath_);
 }
 
 bool SkeletonLogger::createLoggingDirectory(const std::string& loggingPath)
 {
-    loggingPath_ = loggingPath;
-    return std::filesystem::create_directory(loggingPath);
+    int ret = -1;
+    ret = std::filesystem::create_directory(loggingPath);
+
+    std::cout << "Creating logging directory: " << loggingPath << " : " << ret << std::endl;
+
+    return ret;
 }
 
 std::string SkeletonLogger::getFormattedDateTime()
@@ -33,10 +39,11 @@ std::string SkeletonLogger::getFormattedDateTime()
 
 void SkeletonLogger::writeLoggingFile(const std::string& frameData)
 {
+    std::unique_lock<std::mutex> lock(m_);
     if (!isInitialized_)
         initialize();
 
-    std::string filePath = loggingPath_ + "/" + std::to_string(frameNum_) + ".json";
+    std::string filePath = loggingPath_ + "/" + addZeroPadding(frameNum_, 8) + ".json";
 
     std::ofstream file(filePath);
 
@@ -47,8 +54,16 @@ void SkeletonLogger::writeLoggingFile(const std::string& frameData)
 
 std::string SkeletonLogger::readLoggingFile(const std::string& loggingPath, const int& frameNum)
 {
-    std::string filePath = loggingPath + "/" + std::to_string(frameNum) + ".json";
+    std::string filePath = loggingPath + "/" + addZeroPadding(frameNum, 8) + ".json";
+    std::cout << "Reading logging file: " << filePath << std::endl;
     std::ifstream file(filePath);
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     return content;
+}
+
+std::string addZeroPadding(int number, int width)
+{
+    std::ostringstream oss;
+    oss << std::setw(width) << std::setfill('0') << number;
+    return oss.str();
 }

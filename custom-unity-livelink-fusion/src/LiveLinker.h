@@ -26,7 +26,10 @@ static const sl::BODY_FORMAT BODY_FORMAT = sl::BODY_FORMAT::BODY_70;
 struct Arguments {
     std::string calibrationFile = "";
     std::string logDirectory = "";
-    // Add more argument fields as needed
+
+    bool is_streaming = false;
+    bool is_recording = false;
+    bool is_playback = false;
 };
 
 class LiveLinker {
@@ -40,6 +43,8 @@ public:
 
 private:
     Arguments parseArguments(int argc, char* argv[]);
+    bool StartStreaming();
+    bool StartPlayback();
     nlohmann::json getJson(sl::FusionMetrics metrics, sl::Bodies& bodies, sl::BODY_FORMAT body_format);
     nlohmann::json bodyDataToJson(sl::BodyData body);
     nlohmann::json bodyDataToJsonMeter(sl::BodyData body);
@@ -51,7 +56,7 @@ private:
     std::vector<SenderRunner> clients_;
     GLViewer viewer_;
     std::shared_ptr<ConfigParser> config_parser_;
-    std::unique_ptr<SkeletonLogger> logger_;
+    std::unique_ptr<SkeletonLogger> skeleton_logger_;
     sl::Fusion fusion_;
     bool is_initialized_ = false;
     std::string ip_addr = "";

@@ -1,8 +1,10 @@
 #ifndef _SKELETON_LOGGER_H_
 #define _SKELETON_LOGGER_H_
 
+#include <mutex>
 #include <string>
 
+std::string addZeroPadding(int number, int width);
 class SkeletonLogger {
 public:
     SkeletonLogger() = default;
@@ -21,6 +23,7 @@ private:
     std::string loggingPath_;
     std::string loggingFile_;
     int frameNum_ = 0;
+    std::mutex m_;
 };
 
 #endif // _SKELETON_LOGGER_H_
