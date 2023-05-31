@@ -2,6 +2,7 @@
 #include <memory>
 #include <iostream>
 
+// This is the entry point of the application.
 int main(int argc, char **argv) {
     std::unique_ptr<LiveLinker> live_linker = std::make_unique<LiveLinker>();
     live_linker->Initialize(argc, argv);

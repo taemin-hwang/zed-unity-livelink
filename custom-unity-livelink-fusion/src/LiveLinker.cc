@@ -9,6 +9,7 @@ LiveLinker::LiveLinker()
     is_enable_viewer_ = config_parser_->IsViewerOn();
 }
 
+// Initialize the LiveLinker class
 bool LiveLinker::Initialize(int argc, char **argv)
 {
     std::cout << "LiveLinker::Initialize()" << std::endl;
@@ -165,6 +166,8 @@ bool LiveLinker::Start()
     }
 }
 
+
+// Start the streaming mode
 bool LiveLinker::StartStreaming()
 {
     std::cout << "LiveLinker::StartStreaming()" << std::endl;
@@ -247,6 +250,8 @@ bool LiveLinker::StartStreaming()
     return EXIT_SUCCESS;
 }
 
+
+// Start the playback mode
 bool LiveLinker::StartPlayback()
 {
     std::cout << "LiveLinker::StartPlayback()" << std::endl;
@@ -289,6 +294,8 @@ bool LiveLinker::StartPlayback()
     return EXIT_SUCCESS;
 }
 
+
+// Stop the LiveLinker
 void LiveLinker::Stop()
 {
     std::cout << "LiveLinker::Stop()" << std::endl;
