@@ -49,6 +49,7 @@ private:
     nlohmann::json bodyDataToJson(sl::BodyData body);
     nlohmann::json bodyDataToJsonMeter(sl::BodyData body);
     void print(string msg_prefix, sl::ERROR_CODE err_code = sl::ERROR_CODE::SUCCESS, string msg_suffix = "");
+    double limitDecimalPlaces(const double& number, int decimalPlaces);
 
 private:
     Arguments args_;

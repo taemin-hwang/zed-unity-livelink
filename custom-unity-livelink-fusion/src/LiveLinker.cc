@@ -1,5 +1,8 @@
 #include "LiveLinker.h"
 #include <utility>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
 
 LiveLinker::LiveLinker()
 {
@@ -317,64 +320,64 @@ nlohmann::json LiveLinker::bodyDataToJsonMeter(sl::BodyData body)
     res["action_state"] = body.action_state;
 
     res["position"] = nlohmann::json::object();
-    res["position"]["x"] = isnan(body.position.x) ? 0 : body.position.x;
-    res["position"]["y"] = isnan(body.position.y) ? 0 : body.position.y;
-    res["position"]["z"] = isnan(body.position.z) ? 0 : body.position.z;
+    res["position"]["x"] = isnan(body.position.x) ? 0 : limitDecimalPlaces(body.position.x, 3);
+    res["position"]["y"] = isnan(body.position.y) ? 0 : limitDecimalPlaces(body.position.y, 3);
+    res["position"]["z"] = isnan(body.position.z) ? 0 : limitDecimalPlaces(body.position.z, 3);
 
     res["velocity"] = nlohmann::json::object();
-    res["velocity"]["x"] = isnan(body.velocity.x) ? 0 : body.velocity.x;
-    res["velocity"]["y"] = isnan(body.velocity.y) ? 0 : body.velocity.y;
-    res["velocity"]["z"] = isnan(body.velocity.z) ? 0 : body.velocity.z;
+    res["velocity"]["x"] = isnan(body.velocity.x) ? 0 : limitDecimalPlaces(body.velocity.x, 3);
+    res["velocity"]["y"] = isnan(body.velocity.y) ? 0 : limitDecimalPlaces(body.velocity.y, 3);
+    res["velocity"]["z"] = isnan(body.velocity.z) ? 0 : limitDecimalPlaces(body.velocity.z, 3);
 
-    res["confidence"] = isnan(body.confidence) ? 0 : body.confidence;
+    res["confidence"] = isnan(body.confidence) ? 0 : limitDecimalPlaces(body.confidence, 3);
 
     res["bounding_box"] = nlohmann::json::array();
     for (auto &i : body.bounding_box)
     {
         nlohmann::json e;
-        e["x"] = isnan(i.x) ? 0 : i.x;
-        e["y"] = isnan(i.y) ? 0 : i.y;
-        e["z"] = isnan(i.z) ? 0 : i.z;
+        e["x"] = isnan(i.x) ? 0 : limitDecimalPlaces(i.x, 3);
+        e["y"] = isnan(i.y) ? 0 : limitDecimalPlaces(i.y, 3);
+        e["z"] = isnan(i.z) ? 0 : limitDecimalPlaces(i.z, 3);
         res["bounding_box"].push_back(e);
     }
 
     res["dimensions"] = nlohmann::json::object();
-    res["dimensions"]["x"] = isnan(body.dimensions.x) ? 0 : body.dimensions.x;
-    res["dimensions"]["y"] = isnan(body.dimensions.y) ? 0 : body.dimensions.y;
-    res["dimensions"]["z"] = isnan(body.dimensions.z) ? 0 : body.dimensions.z;
+    res["dimensions"]["x"] = isnan(body.dimensions.x) ? 0 : limitDecimalPlaces(body.dimensions.x, 3);
+    res["dimensions"]["y"] = isnan(body.dimensions.y) ? 0 : limitDecimalPlaces(body.dimensions.y, 3);
+    res["dimensions"]["z"] = isnan(body.dimensions.z) ? 0 : limitDecimalPlaces(body.dimensions.z, 3);
 
     res["keypoint"] = nlohmann::json::array();
     for (auto &i : body.keypoint)
     {
         nlohmann::json e;
-        e["x"] = isnan(i.x) ? 0 : i.x;
-        e["y"] = isnan(i.y) ? 0 : i.y;
-        e["z"] = isnan(i.z) ? 0 : i.z;
+        e["x"] = isnan(i.x) ? 0 : limitDecimalPlaces(i.x, 3);
+        e["y"] = isnan(i.y) ? 0 : limitDecimalPlaces(i.y, 3);
+        e["z"] = isnan(i.z) ? 0 : limitDecimalPlaces(i.z, 3);
         res["keypoint"].push_back(e);
     }
 
     res["keypoint_confidence"] = nlohmann::json::array();
     for (auto &i : body.keypoint_confidence)
     {
-        res["keypoint_confidence"].push_back(isnan(i) ? 0 : i);
+        res["keypoint_confidence"].push_back(isnan(i) ? 0 : limitDecimalPlaces(i, 3));
     }
     res["local_position_per_joint"] = nlohmann::json::array();
     for (auto &i : body.local_position_per_joint)
     {
         nlohmann::json e;
-        e["x"] = isnan(i.x) ? 0 : i.x;
-        e["y"] = isnan(i.y) ? 0 : i.y;
-        e["z"] = isnan(i.z) ? 0 : i.z;
+        e["x"] = isnan(i.x) ? 0 : limitDecimalPlaces(i.x, 3);
+        e["y"] = isnan(i.y) ? 0 : limitDecimalPlaces(i.y, 3);
+        e["z"] = isnan(i.z) ? 0 : limitDecimalPlaces(i.z, 3);
         res["local_position_per_joint"].push_back(e);
     }
     res["local_orientation_per_joint"] = nlohmann::json::array();
     for (auto &i : body.local_orientation_per_joint)
     {
         nlohmann::json e;
-        e["x"] = isnan(i.x) ? 0 : i.x;
-        e["y"] = isnan(i.y) ? 0 : i.y;
-        e["z"] = isnan(i.z) ? 0 : i.z;
-        e["w"] = isnan(i.w) ? 1 : i.w;
+        e["x"] = isnan(i.x) ? 0 : limitDecimalPlaces(i.x, 3);
+        e["y"] = isnan(i.y) ? 0 : limitDecimalPlaces(i.y, 3);
+        e["z"] = isnan(i.z) ? 0 : limitDecimalPlaces(i.z, 3);
+        e["w"] = isnan(i.w) ? 1 : limitDecimalPlaces(i.w, 3);
         res["local_orientation_per_joint"].push_back(e);
         if (isnan(i.x) || isnan(i.y) || isnan(i.z) || isnan(i.w))
         {
@@ -382,10 +385,10 @@ nlohmann::json LiveLinker::bodyDataToJsonMeter(sl::BodyData body)
         }
     }
     res["global_root_orientation"] = nlohmann::json::object();
-    res["global_root_orientation"]["x"] = isnan(body.global_root_orientation.x) ? 0 : body.global_root_orientation.x;
-    res["global_root_orientation"]["y"] = isnan(body.global_root_orientation.y) ? 0 : body.global_root_orientation.y;
-    res["global_root_orientation"]["z"] = isnan(body.global_root_orientation.z) ? 0 : body.global_root_orientation.z;
-    res["global_root_orientation"]["w"] = isnan(body.global_root_orientation.w) ? 0 : body.global_root_orientation.w;
+    res["global_root_orientation"]["x"] = isnan(body.global_root_orientation.x) ? 0 : limitDecimalPlaces(body.global_root_orientation.x, 3);
+    res["global_root_orientation"]["y"] = isnan(body.global_root_orientation.y) ? 0 : limitDecimalPlaces(body.global_root_orientation.y, 3);
+    res["global_root_orientation"]["z"] = isnan(body.global_root_orientation.z) ? 0 : limitDecimalPlaces(body.global_root_orientation.z, 3);
+    res["global_root_orientation"]["w"] = isnan(body.global_root_orientation.w) ? 0 : limitDecimalPlaces(body.global_root_orientation.w, 3);
     return res;
 }
 
@@ -405,7 +408,7 @@ nlohmann::json LiveLinker::getJson(sl::FusionMetrics metrics, sl::Bodies &bodies
     {
 
         singleMetricsData["sn"] = cam.sn;
-        singleMetricsData["received_fps"] = metrics.camera_individual_stats[cam.sn].received_fps;
+        singleMetricsData["received_fps"] = limitDecimalPlaces(metrics.camera_individual_stats[cam.sn].received_fps, 3);
         singleMetricsData["received_latency"] = metrics.camera_individual_stats[cam.sn].received_latency;
         singleMetricsData["synced_latency"] = metrics.camera_individual_stats[cam.sn].synced_latency;
         singleMetricsData["is_present"] = metrics.camera_individual_stats[cam.sn].is_present;
@@ -437,6 +440,13 @@ nlohmann::json LiveLinker::getJson(sl::FusionMetrics metrics, sl::Bodies &bodies
     j["bodies"] = bodyData;
 
     return j;
+}
+
+double LiveLinker::limitDecimalPlaces(const double& number, int decimalPlaces)
+{
+    double multiplier = std::pow(10.0, decimalPlaces);
+    double roundedNumber = std::round(number * multiplier) / multiplier;
+    return roundedNumber;
 }
 
 /// ----------------------------------------------------------------------------
