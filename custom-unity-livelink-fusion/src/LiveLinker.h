@@ -61,6 +61,7 @@ private:
     sl::Fusion fusion_;
     bool is_initialized_ = false;
     std::string ip_addr = "";
+    int frameNum_ = 0;
     int port = 0;
     bool is_enable_viewer_ = false;
 };

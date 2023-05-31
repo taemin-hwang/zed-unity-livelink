@@ -3,8 +3,10 @@
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <chrono>
+#include <thread>
 
-LiveLinker::LiveLinker()
+LiveLinker::LiveLinker() : frameNum_(0)
 {
     config_parser_ = std::make_shared<ConfigParser>("../etc/config.json");
     skeleton_logger_ = std::make_unique<SkeletonLogger>();
@@ -227,7 +229,7 @@ bool LiveLinker::StartStreaming()
                     std::string data_to_send = getJson(metrics, fused_bodies, fused_bodies.body_format).dump();
                     sock.sendTo(data_to_send.data(), data_to_send.size(), servAddress, servPort);
                     if (args_.is_recording) {
-                        skeleton_logger_->writeLoggingFile(data_to_send);
+                        skeleton_logger_->writeLoggingFile(data_to_send, frameNum_++);
                     }
                 } catch (SocketException &e) {
                     cerr << e.what() << endl;
@@ -238,7 +240,7 @@ bool LiveLinker::StartStreaming()
         if (is_enable_viewer_) {
             run = viewer_.isAvailable();
         }
-        sl::sleep_ms(10);
+        sl::sleep_ms(20);
     }
 
     if (is_enable_viewer_) {
@@ -286,7 +288,7 @@ bool LiveLinker::StartPlayback()
             cerr << e.what() << endl;
         }
 
-        sl::sleep_ms(33.33);
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
     }
 
     if (is_enable_viewer_)

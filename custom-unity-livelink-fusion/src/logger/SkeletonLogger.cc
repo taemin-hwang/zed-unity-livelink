@@ -37,17 +37,16 @@ std::string SkeletonLogger::getFormattedDateTime()
     return ss.str();
 }
 
-void SkeletonLogger::writeLoggingFile(const std::string& frameData)
+void SkeletonLogger::writeLoggingFile(const std::string& frameData, int frameNum)
 {
     std::unique_lock<std::mutex> lock(m_);
     if (!isInitialized_)
         initialize();
 
-    std::string filePath = loggingPath_ + "/" + addZeroPadding(frameNum_, 8) + ".json";
+    std::string filePath = loggingPath_ + "/" + addZeroPadding(frameNum, 8) + ".json";
 
     std::ofstream file(filePath);
 
-    frameNum_ += 1;
     file << frameData;
     file.close();
 }

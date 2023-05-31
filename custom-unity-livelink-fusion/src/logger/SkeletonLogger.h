@@ -11,7 +11,7 @@ public:
     virtual ~SkeletonLogger() = default;
 
     void initialize();                                                                // Initialize the frame logger
-    void writeLoggingFile(const std::string& frameData);                              // Write logging file
+    void writeLoggingFile(const std::string& frameData, int frameNum);                // Write logging file
     std::string readLoggingFile(const std::string& filePath, const int& frameNum);    // Read logging file
 
 private:
@@ -22,7 +22,6 @@ private:
     bool isInitialized_ = false;
     std::string loggingPath_;
     std::string loggingFile_;
-    int frameNum_ = 0;
     std::mutex m_;
 };
 
