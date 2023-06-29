@@ -5,6 +5,17 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
+#include <csignal>
+#include <functional>
+
+bool m_break_ = false;
+
+// Interrupt on console CTRL+C input
+void OnSignal(int sig) {
+    signal(sig, SIG_IGN);
+    printf("break\n");
+    m_break_ = true;
+}
 
 LiveLinker::LiveLinker() : frameNum_(0)
 {
@@ -18,6 +29,7 @@ LiveLinker::LiveLinker() : frameNum_(0)
 bool LiveLinker::Initialize(int argc, char **argv)
 {
     std::cout << "LiveLinker::Initialize()" << std::endl;
+    signal(SIGINT, OnSignal);
 
     args_ = parseArguments(argc, argv);
 
@@ -206,9 +218,10 @@ bool LiveLinker::StartStreaming()
     std::cout << "Sending fused data at " << servAddress << ":" << servPort << std::endl;
 
     // run the fusion as long as the viewer is available.
-    while (run) {
+    while (run && !m_break_) {
         // run the fusion process (which gather data from all camera, sync them and process them)
-        if (fusion_.process() == sl::FUSION_ERROR_CODE::SUCCESS) {
+        auto ret = fusion_.process();
+        if (ret == sl::FUSION_ERROR_CODE::SUCCESS) {
             // Retrieve fused body
             fusion_.retrieveBodies(fused_bodies, body_tracking_runtime_parameters);
             // for debug, you can retrieve the data send by each camera
@@ -235,6 +248,8 @@ bool LiveLinker::StartStreaming()
                     cerr << e.what() << endl;
                 }
             }
+        } else {
+            std::cout << "Error: Fusion Error: " << ret << std::endl;
         }
 
         if (is_enable_viewer_) {
@@ -262,6 +277,7 @@ bool LiveLinker::StartPlayback()
     std::cout << "LiveLinker::StartPlayback()" << std::endl;
 
     bool run = true;
+    int max_frame_num = countJSONFiles(args_.logDirectory);
 
     // ----------------------------------
     // UDP to Unity----------------------
@@ -275,20 +291,25 @@ bool LiveLinker::StartPlayback()
     std::cout << "Sending fused data at " << servAddress << ":" << servPort << std::endl;
 
     int frameNum = 0;
-
+    std::string a;
     // run the fusion as long as the viewer is available.
-    while (run) {
+    while (run && !m_break_) {
         try {
+
+            std::getline(std::cin, a);
             // ----------------------------------
             // UDP to Unity----------------------
             // ----------------------------------
+            if (frameNum >= max_frame_num) {
+                frameNum = 0;
+            }
             std::string data_to_send = skeleton_logger_->readLoggingFile(args_.logDirectory, frameNum++);
             sock.sendTo(data_to_send.data(), data_to_send.size(), servAddress, servPort);
         } catch (SocketException &e) {
             cerr << e.what() << endl;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(33));
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
     }
 
     if (is_enable_viewer_)
@@ -304,6 +325,16 @@ bool LiveLinker::StartPlayback()
 void LiveLinker::Stop()
 {
     std::cout << "LiveLinker::Stop()" << std::endl;
+}
+
+int LiveLinker::countJSONFiles(const std::string& directoryPath) {
+    int count = 0;
+    for (const auto& entry : fs::directory_iterator(directoryPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".json") {
+            count++;
+        }
+    }
+    return count;
 }
 
 /// ----------------------------------------------------------------------------

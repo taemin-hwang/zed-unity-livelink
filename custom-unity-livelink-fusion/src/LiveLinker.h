@@ -16,12 +16,15 @@
 #include <sl/Camera.hpp>
 #include <iostream>
 #include <memory>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 // Defines the Coordinate system and unit used in this sample
 static const sl::COORDINATE_SYSTEM COORDINATE_SYSTEM = sl::COORDINATE_SYSTEM::LEFT_HANDED_Y_UP;
 static const sl::UNIT UNIT = sl::UNIT::METER;
-static const sl::BODY_TRACKING_MODEL BODY_MODEL = sl::BODY_TRACKING_MODEL::HUMAN_BODY_ACCURATE;
-static const sl::BODY_FORMAT BODY_FORMAT = sl::BODY_FORMAT::BODY_70;
+// static const sl::BODY_TRACKING_MODEL BODY_MODEL = sl::BODY_TRACKING_MODEL::HUMAN_BODY_ACCURATE;
+static const sl::BODY_FORMAT BODY_FORMAT = sl::BODY_FORMAT::BODY_38;
 
 struct Arguments {
     std::string calibrationFile = "";
@@ -50,6 +53,7 @@ private:
     nlohmann::json bodyDataToJsonMeter(sl::BodyData body);
     void print(string msg_prefix, sl::ERROR_CODE err_code = sl::ERROR_CODE::SUCCESS, string msg_suffix = "");
     double limitDecimalPlaces(const double& number, int decimalPlaces);
+    int countJSONFiles(const std::string& directoryPath);
 
 private:
     Arguments args_;
