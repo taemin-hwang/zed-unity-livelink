@@ -48,6 +48,12 @@ public class MoveCamera : MonoBehaviour
                 Vector3 target_pos = new Vector3(0.0f, 0.0f, 0.0f);
                 transform.RotateAround(target_pos, Vector3.up, xRotateMove);
                 transform.RotateAround(target_pos, Vector3.right, yRotateMove);
+
+                float cameraHeight = transform.position.y;
+                if (cameraHeight < 0f) {
+                    transform.position -= new Vector3(0f, cameraHeight, 0f);
+                }
+
                 transform.LookAt(target_pos);
             }
         }
