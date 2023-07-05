@@ -883,6 +883,8 @@ public class MySkeletonHandler : ScriptableObject
     private sl.BODY_FORMAT currentBodyFormat = sl.BODY_FORMAT.BODY_38;
     public sl.BODY_FORMAT BodyFormat { get { return currentBodyFormat; } set { currentBodyFormat = value; UpdateCurrentValues(currentBodyFormat); } }
 
+    private Vector3 original_local_scale;
+
     #endregion
 
     /// <summary>
@@ -953,7 +955,10 @@ public class MySkeletonHandler : ScriptableObject
     /// <param name="body_format">The Body model to apply (38 or 70 bones).</param>
     public void Create(GameObject h, sl.BODY_FORMAT body_format)
     {
-        humanoid = (GameObject)Instantiate(h, Vector3.zero, Quaternion.identity);
+        // original_local_scale = h.transform.localScale;
+        humanoid = (GameObject)Instantiate(h, new Vector3(0f, 10f, 0f), Quaternion.identity);
+        // humanoid = (GameObject)Instantiate(h, Vector3.zero, Quaternion.identity);
+        // humanoid.transform.localScale = new Vector3(0f, 0f, 0f);
         animator = humanoid.GetComponent<Animator>();
 
         BodyFormat = body_format;
@@ -994,6 +999,7 @@ public class MySkeletonHandler : ScriptableObject
         Array.Clear(bones, 0, bones.Length);
         Array.Clear(spheres, 0, spheres.Length);
         number.transform.localScale = new Vector3(0f, 0f, 0f);
+        // humanoid.transform.localScale = new Vector3(0f, 0f, 0f);
     }
 
     /// <summary>
@@ -1195,6 +1201,7 @@ public class MySkeletonHandler : ScriptableObject
     {
         currentJoints = jointsPosition;
 
+        // humanoid.transform.localScale = original_local_scale;
         humanoid.SetActive(useAvatar);
         skeleton.SetActive(!useAvatar || MyZEDBodyTrackingManager.EnableSDKSkeleton);
 
