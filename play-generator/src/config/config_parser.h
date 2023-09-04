@@ -20,6 +20,9 @@ public:
     inline std::vector<std::vector<int>> get_rotation() const { return rotation_; }
     inline std::vector<int> get_ids() const { return ids_; }
     inline std::vector<int> get_start_frame() const { return start_frame_; }
+    inline std::string get_ip_addr() const { return ip_addr_; }
+    inline int get_port() const { return port_; }
+    inline int get_delay() const { return delay_; }
 
 private:
     int people_num_;
@@ -28,6 +31,9 @@ private:
     std::vector<std::vector<int>> rotation_;
     std::vector<int> ids_;
     std::vector<int> start_frame_;
+    std::string ip_addr_;
+    int port_;
+    int delay_;
 };
 
 

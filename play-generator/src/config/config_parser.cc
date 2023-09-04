@@ -65,4 +65,9 @@ ConfigParser::ConfigParser(const std::string& config_file = "../etc/config.json"
         std::cout << std::endl;
     }
 
+    // parse ip addr and port
+    ip_addr_ = doc["ip_addr"].GetString();
+    port_ = doc["port"].GetInt();
+    delay_ = doc["delay"].GetInt();
+
 }

@@ -5,6 +5,8 @@
 
 #include "config/config_parser.h"
 #include "generator/generator.h"
+#include "transfer/PracticalSocket.h"
+#include "transfer/json.h"
 
 class PlayGenerator {
 public:

@@ -15,6 +15,7 @@ public:
     virtual ~Generator() = default;
 
     void generate();
+    std::string generate(int frame_num);
 
 private:
     std::string add_zero_padding(int number, int width);

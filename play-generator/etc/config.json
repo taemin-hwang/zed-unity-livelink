@@ -1,4 +1,7 @@
 {
+    "ip_addr" : "127.0.0.1",
+    "port" : 20001,
+    "delay" : 33,
     "files" : [
         {
             "name" : "../log/02-1person-1-sabok",
