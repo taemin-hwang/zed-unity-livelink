@@ -14,18 +14,23 @@ std::string Generator::generate(int frame_num) {
     template_document.CopyFrom(get_template_document("../etc/template.json"), template_allocator);
 
     // print template document
-    std::cout << "template_document: " << std::endl;
-    std::cout << "  * bodies: " << std::endl;
-    std::cout << "    * body_format: " << template_document["bodies"]["body_format"].GetInt() << std::endl;
-    std::cout << "    * body_list (size) : " << template_document["bodies"]["body_list"].Size() << std::endl;
-    std::cout << "  * nb_object: " << template_document["bodies"]["nb_object"].GetInt() << std::endl;
+    // std::cout << "template_document: " << std::endl;
+    // std::cout << "  * bodies: " << std::endl;
+    // std::cout << "    * body_format: " << template_document["bodies"]["body_format"].GetInt() << std::endl;
+    // std::cout << "    * body_list (size) : " << template_document["bodies"]["body_list"].Size() << std::endl;
+    // std::cout << "  * nb_object: " << template_document["bodies"]["nb_object"].GetInt() << std::endl;
 
     // get logging document
-    std::cout << "get logging document" << std::endl;
+    std::cout << "get logging document ";
+
+    for (int i = 0; i < frame_num % 20; i++ ) {
+        printf(".");
+    }
+    printf("\n");
 
     // set nb_object
     template_document["bodies"]["nb_object"] = people_num;
-    std::cout << "people_num: " << people_num << std::endl;
+    // std::cout << "people_num: " << people_num << std::endl;
 
     for (int i = 0; i < people_num; i++) {
         auto current_frame = frame_num + config_parser_->get_start_frame()[i];
@@ -36,19 +41,19 @@ std::string Generator::generate(int frame_num) {
         auto id = config_parser_->get_ids()[i];
         auto position = config_parser_->get_position()[i];
 
-        std::cout << "posistion" << std::endl;
-        std::cout << "  * x: " << position[0] << std::endl;
-        std::cout << "  * y: " << position[1] << std::endl;
-        std::cout << "  * z: " << position[2] << std::endl;
+        // std::cout << "posistion" << std::endl;
+        // std::cout << "  * x: " << position[0] << std::endl;
+        // std::cout << "  * y: " << position[1] << std::endl;
+        // std::cout << "  * z: " << position[2] << std::endl;
 
-        std::cout << "read logging document: " << logging_file << std::endl;
-        std::cout << "  * bodies: " << std::endl;
-        std::cout << "    * body_format: " << logging_document["bodies"]["body_format"].GetInt() << std::endl;
-        std::cout << "    * body_list (size) : " << logging_document["bodies"]["body_list"].Size() << std::endl;
-        for (int i = 0; i < logging_document["bodies"]["body_list"].Size(); i++) {
-            std::cout << "      *[" << i << "] id: " << logging_document["bodies"]["body_list"][i]["id"].GetInt() << std::endl;
-            std::cout << "      *[" << i << "] confidence: " << logging_document["bodies"]["body_list"][i]["confidence"].GetDouble() << std::endl;
-        }
+        // std::cout << "read logging document: " << logging_file << std::endl;
+        // std::cout << "  * bodies: " << std::endl;
+        // std::cout << "    * body_format: " << logging_document["bodies"]["body_format"].GetInt() << std::endl;
+        // std::cout << "    * body_list (size) : " << logging_document["bodies"]["body_list"].Size() << std::endl;
+        // for (int i = 0; i < logging_document["bodies"]["body_list"].Size(); i++) {
+        //     std::cout << "      *[" << i << "] id: " << logging_document["bodies"]["body_list"][i]["id"].GetInt() << std::endl;
+        //     std::cout << "      *[" << i << "] confidence: " << logging_document["bodies"]["body_list"][i]["confidence"].GetDouble() << std::endl;
+        // }
 
         int body_list_size = logging_document["bodies"]["body_list"].Size();
 
@@ -73,14 +78,14 @@ std::string Generator::generate(int frame_num) {
     }
 
     // print template document
-    std::cout << "template_document: " << std::endl;
-    std::cout << "  * bodies: " << std::endl;
-    std::cout << "    * body_format: " << template_document["bodies"]["body_format"].GetInt() << std::endl;
-    std::cout << "    * body_list (size) : " << template_document["bodies"]["body_list"].Size() << std::endl;
-    for (int i = 0; i < template_document["bodies"]["body_list"].Size(); i++) {
-        std::cout << "      *[" << i << "] id: " << template_document["bodies"]["body_list"][i]["id"].GetInt() << std::endl;
-        std::cout << "      *[" << i << "] confidence: " << template_document["bodies"]["body_list"][i]["confidence"].GetDouble() << std::endl;
-    }
+    // std::cout << "template_document: " << std::endl;
+    // std::cout << "  * bodies: " << std::endl;
+    // std::cout << "    * body_format: " << template_document["bodies"]["body_format"].GetInt() << std::endl;
+    // std::cout << "    * body_list (size) : " << template_document["bodies"]["body_list"].Size() << std::endl;
+    // for (int i = 0; i < template_document["bodies"]["body_list"].Size(); i++) {
+    //     std::cout << "      *[" << i << "] id: " << template_document["bodies"]["body_list"][i]["id"].GetInt() << std::endl;
+    //     std::cout << "      *[" << i << "] confidence: " << template_document["bodies"]["body_list"][i]["confidence"].GetDouble() << std::endl;
+    // }
 
     // write template document
     rapidjson::StringBuffer buffer;
