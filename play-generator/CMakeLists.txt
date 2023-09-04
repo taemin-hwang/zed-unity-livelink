@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 2.4)
+PROJECT(play-generator)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
+)
+
+FILE(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c*)
+FILE(GLOB_RECURSE HDR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h*)
+
+find_package(PkgConfig)
+
+add_executable(${PROJECT_NAME} ${HDR_FILES} ${SRC_FILES})
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/opt/${PROJECT_NAME}/bin/)
