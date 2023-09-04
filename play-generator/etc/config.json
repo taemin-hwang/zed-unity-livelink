@@ -4,14 +4,14 @@
             "name" : "../log/02-1person-1-sabok",
             "id" : 1,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [1, 0, 1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-2-sabok",
             "id" : 2,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [-2, 0, 0],
             "rotation" : [0, 0, 0]
         },
         {
@@ -25,35 +25,35 @@
             "name" : "../log/02-1person-4-sabok",
             "id" : 4,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [2, 0, 0],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-5-sabok",
             "id" : 5,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [-1, 0, -1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-6-sabok",
             "id" : 6,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [1, 0, -1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-7-sabok",
             "id" : 7,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [0, 0, -2],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-8-sabok",
             "id" : 8,
             "start" : 0,
-            "position" : [0, 0, 0],
+            "position" : [-1, 0, 1],
             "rotation" : [0, 0, 0]
         }
     ]

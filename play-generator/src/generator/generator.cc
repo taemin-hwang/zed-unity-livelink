@@ -16,7 +16,7 @@ void Generator::generate() {
     // get template document
     std::cout << "get template document" << std::endl;
 
-    while(frame_num < 200) {
+    while(frame_num < 1000) {
         rapidjson::Document template_document;
         auto& template_allocator = template_document.GetAllocator();
         template_document.CopyFrom(get_template_document("../etc/template.json"), template_allocator);
@@ -42,6 +42,12 @@ void Generator::generate() {
 
             auto logging_document = get_logging_document(logging_file);
             auto id = config_parser_->get_ids()[i];
+            auto position = config_parser_->get_position()[i];
+
+            std::cout << "posistion" << std::endl;
+            std::cout << "  * x: " << position[0] << std::endl;
+            std::cout << "  * y: " << position[1] << std::endl;
+            std::cout << "  * z: " << position[2] << std::endl;
 
             std::cout << "read logging document: " << logging_file << std::endl;
             std::cout << "  * bodies: " << std::endl;
@@ -59,6 +65,16 @@ void Generator::generate() {
 
                 // change id
                 temporary_value["id"] = id;
+
+                // add keypoint offset
+                int keypoint_size = temporary_value["keypoint"].Size();
+
+                for (int i = 0 ; i < keypoint_size; i++) {
+                    temporary_value["keypoint"][i]["x"].SetDouble(temporary_value["keypoint"][i]["x"].GetDouble() + position[0]);
+                    temporary_value["keypoint"][i]["y"].SetDouble(temporary_value["keypoint"][i]["y"].GetDouble() + position[1]);
+                    temporary_value["keypoint"][i]["z"].SetDouble(temporary_value["keypoint"][i]["z"].GetDouble() + position[2]);
+                }
+
                 // push bodies to template
                 template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
             }
