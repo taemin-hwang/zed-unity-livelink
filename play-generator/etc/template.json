@@ -1,0 +1,99 @@
+{
+    "bodies": {
+        "body_format": 2,
+        "body_list": [
+
+        ],
+        "is_new": 0,
+        "is_tracked": 0,
+        "nb_object": 8,
+        "timestamp": 1692858488070412720
+    },
+    "fusionMetrics": {
+        "camera_individual_stats": [
+            {
+                "delta_ts": 0.06121145188808441,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 21.904,
+                "received_latency": -1692858496.0,
+                "sn": 30627390,
+                "synced_latency": 0.0480954684317112
+            },
+            {
+                "delta_ts": 0.09118093550205231,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.574,
+                "received_latency": -1692858496.0,
+                "sn": 31522358,
+                "synced_latency": 0.04536063224077225
+            },
+            {
+                "delta_ts": 0.031779926270246506,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.122,
+                "received_latency": -1692858496.0,
+                "sn": 31747683,
+                "synced_latency": 0.0630299299955368
+            },
+            {
+                "delta_ts": 0.06451374292373657,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 23.66,
+                "received_latency": -1692858496.0,
+                "sn": 33223079,
+                "synced_latency": 0.04867786914110184
+            },
+            {
+                "delta_ts": 0.06475594639778137,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.234,
+                "received_latency": -1692858496.0,
+                "sn": 35119399,
+                "synced_latency": 0.05495992675423622
+            },
+            {
+                "delta_ts": 0.09830517321825027,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.925,
+                "received_latency": -1692858496.0,
+                "sn": 35298497,
+                "synced_latency": 0.04364606738090515
+            },
+            {
+                "delta_ts": 0.04782843962311745,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.689,
+                "received_latency": -1692858496.0,
+                "sn": 36713533,
+                "synced_latency": 0.04601408541202545
+            },
+            {
+                "delta_ts": 0.03823414444923401,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 22.689,
+                "received_latency": -1692858496.0,
+                "sn": 37094637,
+                "synced_latency": 0.050766486674547195
+            },
+            {
+                "delta_ts": 0.03285650536417961,
+                "is_present": true,
+                "ratio_detection": 100.0,
+                "received_fps": 23.044,
+                "received_latency": -1692858496.0,
+                "sn": 38527495,
+                "synced_latency": 0.043254222720861435
+            }
+        ],
+        "mean_camera_fused": 7.045454502105713,
+        "mean_stdev_between_camera": 0.009356186725199223
+    }
+}
