@@ -110,9 +110,9 @@ rapidjson::Value Generator::get_body_from_logging_document(rapidjson::Document& 
     int keypoint_size = temporary_value["keypoint"].Size(); // 38 keypoint
 
     for (int i = 0 ; i < keypoint_size; i++) {
-        temporary_value["keypoint"][i]["x"].SetDouble(temporary_value["keypoint"][i]["x"].GetDouble() + position[0]*1.2);
-        temporary_value["keypoint"][i]["y"].SetDouble(temporary_value["keypoint"][i]["y"].GetDouble() + position[1]*1.2);
-        temporary_value["keypoint"][i]["z"].SetDouble(temporary_value["keypoint"][i]["z"].GetDouble() + position[2]*1.2);
+        temporary_value["keypoint"][i]["x"].SetDouble(temporary_value["keypoint"][i]["x"].GetDouble() + position[0] * POSISTION_SCALE);
+        temporary_value["keypoint"][i]["y"].SetDouble(temporary_value["keypoint"][i]["y"].GetDouble() + position[1] * POSISTION_SCALE);
+        temporary_value["keypoint"][i]["z"].SetDouble(temporary_value["keypoint"][i]["z"].GetDouble() + position[2] * POSISTION_SCALE);
     }
 
     // update people

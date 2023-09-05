@@ -73,7 +73,7 @@ struct BodyList {
     }
 
 private:
-    const int BUFFER_SIZE = 10;
+    const int BUFFER_SIZE = 5;
 };
 
 

@@ -28,6 +28,8 @@ private:
     std::shared_ptr<ConfigParser> config_parser_;
     std::vector<BodyList> people_;
     std::vector<std::string> bodies_;
+
+    const double POSISTION_SCALE = 1.2;
 };
 
 
