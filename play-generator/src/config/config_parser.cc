@@ -12,25 +12,6 @@ ConfigParser::ConfigParser(const std::string& config_file = "../etc/config.json"
     doc.ParseStream(is);
     fclose(fp);
 
-    // {
-    // "files" : [
-    //     {
-    //         "name" : "./log/02-1person-1-sabok",
-    //         "id" : 1,
-    //         "start" : 0,
-    //         "position" : [0, 0, 0],
-    //         "rotation" : [0, 0, 0]
-    //     },
-    //     {
-    //         "name" : "./log/02-1person-2-sabok",
-    //         "id" : 2,
-    //         "start" : 0,
-    //         "position" : [0, 0, 0],
-    //         "rotation" : [0, 0, 0]
-    //     }
-    // ]
-    // }
-
     // Parse configuration
     const rapidjson::Value& files = doc["files"];
     people_num_ = files.Size();

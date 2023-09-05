@@ -21,14 +21,13 @@ void PlayGenerator::run() {
 
     UDPSocket sock;
 
-    while(frame_num < 1000) {
+    while(frame_num < 1500) {
         auto generated_packet = generator_->generate(frame_num);
         sock.sendTo(generated_packet.data(), generated_packet.size(), ip_addr.c_str(), port);
 
         frame_num++;
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
-
 }
 
 void PlayGenerator::shutdown() {
