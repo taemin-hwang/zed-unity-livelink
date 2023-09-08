@@ -26,7 +26,7 @@ std::string Generator::generate(int frame_num) {
     template_document.CopyFrom(get_template_document("../etc/template.json"), template_allocator);
 
     // get logging document
-    std::cout << "get logging document ";
+    std::cout << "get logging document " << add_zero_padding(frame_num, 8) << " ";
 
     for (int i = 0; i <= frame_num % 20; i++ ) {
         printf(".");
@@ -41,6 +41,13 @@ std::string Generator::generate(int frame_num) {
         auto current_frame = frame_num + config_parser_->get_start_frame()[i];
 
         std::string logging_file = config_parser_->get_logging_directory()[i] + "/" + add_zero_padding(current_frame, 8) + ".json";
+
+        // check if logging file exists
+        if (!std::filesystem::exists(logging_file)) {
+            std::cout << "logging file does not exist: " << logging_file << std::endl;
+            break;
+        }
+
         auto logging_document = get_logging_document(logging_file);
 
         int body_list_size = logging_document["bodies"]["body_list"].Size();
