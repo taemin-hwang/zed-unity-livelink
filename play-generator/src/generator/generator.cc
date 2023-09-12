@@ -41,7 +41,7 @@ std::string Generator::generate(int frame_num) {
         auto current_frame = frame_num + config_parser_->get_start_frame()[i];
 
         std::string logging_file = config_parser_->get_logging_directory()[i] + "/" + add_zero_padding(current_frame, 8) + ".json";
-
+        // std::cout << "logging_file: " << logging_file << std::endl;
         // check if logging file exists
         if (!std::filesystem::exists(logging_file)) {
             std::cout << "logging file does not exist: " << logging_file << std::endl;
@@ -54,20 +54,20 @@ std::string Generator::generate(int frame_num) {
         if (body_list_size == 1) {
             auto temporary_value = get_body_from_logging_document(logging_document, i, template_allocator);
 
-            // convert to string
-            rapidjson::StringBuffer buffer;
-            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            temporary_value.Accept(writer);
-            bodies_[i] = buffer.GetString();
+            // // convert to string
+            // rapidjson::StringBuffer buffer;
+            // rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+            // temporary_value.Accept(writer);
+            // bodies_[i] = buffer.GetString();
 
             // push bodies to template
             template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
 
         } else if (bodies_[i].size() > 0) {
-            auto temporary_value = get_body_from_buffer(i);
+            // auto temporary_value = get_body_from_buffer(i);
 
             // push bodies to template
-            template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
+            // template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
         }
     }
 
@@ -105,6 +105,9 @@ void Generator::generate() {
 }
 
 rapidjson::Value Generator::get_body_from_logging_document(rapidjson::Document& logging_document, int idx, rapidjson::MemoryPoolAllocator<>& allocator) {
+    // std::cout << "idx : " << idx << std::endl;
+    // std::cout << "id : " << config_parser_->get_ids()[idx] << std::endl;
+    // std::cout << "position : " << config_parser_->get_position()[idx][0] << ", " << config_parser_->get_position()[idx][1] << ", " << config_parser_->get_position()[idx][2] << std::endl;
     auto id = config_parser_->get_ids()[idx] - 1;
     auto position = config_parser_->get_position()[idx];
 
@@ -149,6 +152,9 @@ rapidjson::Value Generator::get_body_from_logging_document(rapidjson::Document& 
 }
 
 rapidjson::Value Generator::get_body_from_buffer(int idx) {
+    // std::cout << "get_body_from_buffer" << std::endl;
+    // std::cout << "idx : " << idx << std::endl;
+    // std::cout << "id : " << config_parser_->get_ids()[idx] << std::endl;
     auto id = config_parser_->get_ids()[idx] - 1;
     rapidjson::Value temporary_value(rapidjson::kObjectType);
 

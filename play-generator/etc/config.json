@@ -6,56 +6,56 @@
         {
             "name" : "../log/02-1person-1-sabok",
             "id" : 1,
-            "start" : 220,
+            "start" : 260,
             "position" : [1, 0, 1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-2-sabok",
             "id" : 2,
-            "start" : 260,
+            "start" : 290,
             "position" : [-2, 0, 0],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-3-sabok",
             "id" : 3,
-            "start" : 420,
+            "start" : 450,
             "position" : [0, 0, 0],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-4-sabok",
             "id" : 4,
-            "start" : 280,
+            "start" : 320,
             "position" : [2, 0, 0],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-5-sabok",
             "id" : 5,
-            "start" : 480,
+            "start" : 510,
             "position" : [-1, 0, -1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-6-sabok",
             "id" : 6,
-            "start" : 180,
+            "start" : 230,
             "position" : [1, 0, -1],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-7-sabok",
             "id" : 7,
-            "start" : 370,
+            "start" : 410,
             "position" : [0, 0, -2],
             "rotation" : [0, 0, 0]
         },
         {
             "name" : "../log/02-1person-8-sabok",
             "id" : 8,
-            "start" : 450,
+            "start" : 480,
             "position" : [-1, 0, 1],
             "rotation" : [0, 0, 0]
         }
