@@ -9,12 +9,12 @@
 
 Generator::Generator(std::shared_ptr<ConfigParser> config_parser) : config_parser_(config_parser){\
     int people_num = config_parser_->get_people_num();
-    bodies_.resize(people_num);
-    for (int i = 0; i < people_num; i++) {
+    bodies_.resize(kMaxPeopleNum);
+    for (int i = 0; i < kMaxPeopleNum; i++) {
         bodies_[i] = "";
     }
-    people_.resize(people_num);
-    for (int i = 0; i < people_num; i++) {
+    people_.resize(kMaxPeopleNum);
+    for (int i = 0; i < kMaxPeopleNum; i++) {
         people_[i] = BodyList();
     }
 }
@@ -41,7 +41,7 @@ std::string Generator::generate(int frame_num) {
         auto current_frame = frame_num + config_parser_->get_start_frame()[i];
 
         std::string logging_file = config_parser_->get_logging_directory()[i] + "/" + add_zero_padding(current_frame, 8) + ".json";
-        // std::cout << "logging_file: " << logging_file << std::endl;
+
         // check if logging file exists
         if (!std::filesystem::exists(logging_file)) {
             std::cout << "logging file does not exist: " << logging_file << std::endl;
@@ -50,24 +50,26 @@ std::string Generator::generate(int frame_num) {
 
         auto logging_document = get_logging_document(logging_file);
 
+        int id = config_parser_->get_ids()[i] - 1;
+
         int body_list_size = logging_document["bodies"]["body_list"].Size();
         if (body_list_size == 1) {
             auto temporary_value = get_body_from_logging_document(logging_document, i, template_allocator);
 
-            // // convert to string
-            // rapidjson::StringBuffer buffer;
-            // rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            // temporary_value.Accept(writer);
-            // bodies_[i] = buffer.GetString();
+            // convert to string
+            rapidjson::StringBuffer buffer;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+            temporary_value.Accept(writer);
+            bodies_[id] = std::string(buffer.GetString());
 
             // push bodies to template
             template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
 
-        } else if (bodies_[i].size() > 0) {
-            // auto temporary_value = get_body_from_buffer(i);
+        } else if (bodies_[id].size() > 0) {
+            auto temporary_value = get_body_from_buffer(i);
 
             // push bodies to template
-            // template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
+            template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
         }
     }
 
@@ -105,9 +107,6 @@ void Generator::generate() {
 }
 
 rapidjson::Value Generator::get_body_from_logging_document(rapidjson::Document& logging_document, int idx, rapidjson::MemoryPoolAllocator<>& allocator) {
-    // std::cout << "idx : " << idx << std::endl;
-    // std::cout << "id : " << config_parser_->get_ids()[idx] << std::endl;
-    // std::cout << "position : " << config_parser_->get_position()[idx][0] << ", " << config_parser_->get_position()[idx][1] << ", " << config_parser_->get_position()[idx][2] << std::endl;
     auto id = config_parser_->get_ids()[idx] - 1;
     auto position = config_parser_->get_position()[idx];
 
@@ -152,9 +151,6 @@ rapidjson::Value Generator::get_body_from_logging_document(rapidjson::Document& 
 }
 
 rapidjson::Value Generator::get_body_from_buffer(int idx) {
-    // std::cout << "get_body_from_buffer" << std::endl;
-    // std::cout << "idx : " << idx << std::endl;
-    // std::cout << "id : " << config_parser_->get_ids()[idx] << std::endl;
     auto id = config_parser_->get_ids()[idx] - 1;
     rapidjson::Value temporary_value(rapidjson::kObjectType);
 
@@ -163,11 +159,8 @@ rapidjson::Value Generator::get_body_from_buffer(int idx) {
     body_document.Parse(bodies_[id].c_str());
 
     if(body_document.HasParseError()) {
-        std::string debug;
         std::cout << "Parsing error for reading buffer" << std::endl;
         std::cout << bodies_[id] << std::endl;
-        std::cin >> debug;
-
         return temporary_value;
     }
 
