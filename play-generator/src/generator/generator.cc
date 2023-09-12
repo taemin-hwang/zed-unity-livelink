@@ -66,7 +66,8 @@ std::string Generator::generate(int frame_num) {
             template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
 
         } else if (bodies_[id].size() > 0) {
-            auto temporary_value = get_body_from_buffer(i);
+            rapidjson::Value temporary_value;
+            temporary_value.CopyFrom(get_body_from_buffer(i), template_allocator);
 
             // push bodies to template
             template_document["bodies"]["body_list"].PushBack(temporary_value, template_allocator);
