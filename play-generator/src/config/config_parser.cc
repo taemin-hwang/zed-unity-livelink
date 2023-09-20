@@ -22,9 +22,19 @@ ConfigParser::ConfigParser(const std::string& config_file = "../etc/config.json"
         start_frame_.push_back(file["start"].GetInt());
         position_.push_back(std::vector<int>());
         rotation_.push_back(std::vector<int>());
+        skip_.push_back(std::vector<int>());
+        rewind_.push_back(std::vector<int>());
         for (rapidjson::SizeType j = 0; j < 3; j++) {
             position_[i].push_back(file["position"][j].GetInt());
             rotation_[i].push_back(file["rotation"][j].GetInt());
+        }
+        int skip_size = file["skip"].Size();
+        for (rapidjson::SizeType j = 0; j < skip_size; j++) {
+            skip_[i].push_back(file["skip"][j].GetInt());
+        }
+        int rewind_size = file["rewind"].Size();
+        for (rapidjson::SizeType j = 0; j < rewind_size; j++) {
+            rewind_[i].push_back(file["rewind"][j].GetInt());
         }
     }
 
@@ -44,11 +54,22 @@ ConfigParser::ConfigParser(const std::string& config_file = "../etc/config.json"
             std::cout << rotation_[i][j] << " ";
         }
         std::cout << std::endl;
+        std::cout << "  * skip: ";
+        for (int j = 0; j < skip_[i].size(); j++) {
+            std::cout << skip_[i][j] << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "  * rewind: ";
+        for (int j = 0; j < rewind_[i].size(); j++) {
+            std::cout << rewind_[i][j] << " ";
+        }
+        std::cout << std::endl;
     }
 
     // parse ip addr and port
     ip_addr_ = doc["ip_addr"].GetString();
     port_ = doc["port"].GetInt();
     delay_ = doc["delay"].GetInt();
+    initial_frame_ = doc["init"].GetInt();
 
 }

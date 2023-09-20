@@ -14,6 +14,7 @@ public:
     ConfigParser(const std::string& config_file);
     virtual ~ConfigParser() = default;
 
+    inline int get_initial_frame() const { return initial_frame_; }
     inline int get_people_num() const { return people_num_; }
     inline std::vector<std::string> get_logging_directory() const { return logging_directory_; }
     inline std::vector<std::vector<int>> get_position() const { return position_; }
@@ -23,8 +24,11 @@ public:
     inline std::string get_ip_addr() const { return ip_addr_; }
     inline int get_port() const { return port_; }
     inline int get_delay() const { return delay_; }
+    inline std::vector<std::vector<int>> get_skip() const { return skip_; }
+    inline std::vector<std::vector<int>> get_rewind() const { return rewind_; }
 
 private:
+    int initial_frame_;
     int people_num_;
     std::vector<std::string> logging_directory_;
     std::vector<std::vector<int>> position_;
@@ -32,6 +36,8 @@ private:
     std::vector<int> ids_;
     std::vector<int> start_frame_;
     std::string ip_addr_;
+    std::vector<std::vector<int>> skip_;
+    std::vector<std::vector<int>> rewind_;
     int port_;
     int delay_;
 };

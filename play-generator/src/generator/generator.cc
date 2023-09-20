@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 Generator::Generator(std::shared_ptr<ConfigParser> config_parser) : config_parser_(config_parser){\
     int people_num = config_parser_->get_people_num();
@@ -16,6 +17,11 @@ Generator::Generator(std::shared_ptr<ConfigParser> config_parser) : config_parse
     people_.resize(kMaxPeopleNum);
     for (int i = 0; i < kMaxPeopleNum; i++) {
         people_[i] = BodyList();
+    }
+
+    frame_offset_.resize(kMaxPeopleNum);
+    for (int i = 0; i < kMaxPeopleNum; i++) {
+        frame_offset_[i] = 0;
     }
 }
 
@@ -38,7 +44,20 @@ std::string Generator::generate(int frame_num) {
     // std::cout << "people_num: " << people_num << std::endl;
 
     for (int i = 0; i < people_num; i++) {
-        auto current_frame = frame_num + config_parser_->get_start_frame()[i];
+
+        // check if this frame should be skipped
+        auto skip_frame = config_parser_->get_skip()[i];
+        if (std::find(skip_frame.begin(), skip_frame.end(), frame_num) != skip_frame.end()) {
+            std::cout << "skip frame: " << frame_num << std::endl;
+            frame_offset_[i] += 2;
+        }
+        auto rewind_frame = config_parser_->get_rewind()[i];
+        if (std::find(rewind_frame.begin(), rewind_frame.end(), frame_num) != rewind_frame.end()) {
+            std::cout << "rewind frame: " << frame_num << std::endl;
+            frame_offset_[i] -= 2;
+        }
+
+        auto current_frame = frame_num + config_parser_->get_start_frame()[i] + frame_offset_[i];
 
         std::string logging_file = config_parser_->get_logging_directory()[i] + "/" + add_zero_padding(current_frame, 8) + ".json";
 
