@@ -62,7 +62,7 @@
             "name" : "../log/02-1person-7-sabok",
             "id" : 7,
             "start" : 362,
-            "position" : [0, 0, -2],
+            "position" : [-0.2, 0, -1.4],
             "rotation" : [0, 0, 0],
             "skip" : [1300, 1310, 1340, 1350, 1460, 1480],
             "rewind" : []
