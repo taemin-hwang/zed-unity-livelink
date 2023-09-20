@@ -1,6 +1,6 @@
 {
     "ip_addr" : "127.0.0.1",
-    "init" : 0,
+    "init" : 100,
     "port" : 20001,
     "delay" : 30,
     "files" : [
@@ -8,7 +8,7 @@
             "name" : "../log/02-1person-1-sabok",
             "id" : 1,
             "start" : 187,
-            "position" : [1, 0, 1],
+            "position" : [-1, 0, 1],
             "rotation" : [0, 0, 0],
             "skip" : [],
             "rewind" : [1200, 1220, 1230, 1240]
@@ -17,9 +17,9 @@
             "name" : "../log/02-1person-2-sabok",
             "id" : 2,
             "start" : 215,
-            "position" : [-2, 0, 0],
+            "position" : [2, 0, 0],
             "rotation" : [0, 0, 0],
-            "skip" : [],
+            "skip" : [1300, 1310],
             "rewind" : [1100, 1120, 1122]
         },
         {
@@ -29,33 +29,33 @@
             "position" : [0, 0, 0],
             "rotation" : [0, 0, 0],
             "skip" : [982, 984, 986, 988, 1010],
-            "rewind" : [1020, 1024, 1028, 1032, 1036, 1051, 1100, 1102, 1130, 1290, 1300]
+            "rewind" : [1020, 1024, 1028, 1032, 1036, 1051, 1100, 1102, 1130, 1200, 1210, 1220]
         },
         {
             "name" : "../log/02-1person-4-sabok",
             "id" : 4,
             "start" : 277,
-            "position" : [2, 0, 0],
+            "position" : [-2, 0, 0],
             "rotation" : [0, 0, 0],
-            "skip" : [],
+            "skip" : [1300, 1310],
             "rewind" : []
         },
         {
             "name" : "../log/02-1person-5-sabok",
             "id" : 5,
             "start" : 471,
-            "position" : [-1, 0, -1],
+            "position" : [1, 0, -1],
             "rotation" : [0, 0, 0],
-            "skip" : [],
+            "skip" : [1300, 1310],
             "rewind" : [1053, 1055, 1057]
         },
         {
             "name" : "../log/02-1person-6-sabok",
             "id" : 6,
             "start" : 189,
-            "position" : [1, 0, -1],
+            "position" : [-1, 0, -1],
             "rotation" : [0, 0, 0],
-            "skip" : [1085, 1100, 1160],
+            "skip" : [1085, 1100, 1160, 1300, 1310],
             "rewind" : []
         },
         {
@@ -64,16 +64,16 @@
             "start" : 362,
             "position" : [0, 0, -2],
             "rotation" : [0, 0, 0],
-            "skip" : [],
+            "skip" : [1300, 1310, 1340, 1350, 1460, 1480],
             "rewind" : []
         },
         {
             "name" : "../log/02-1person-8-sabok",
             "id" : 8,
             "start" : 431,
-            "position" : [-1, 0, 1],
+            "position" : [1, 0, 1],
             "rotation" : [0, 0, 0],
-            "skip" : [1100, 1105, 1233, 1237],
+            "skip" : [1100, 1105, 1230, 1233, 1235, 1237, 1400, 1420],
             "rewind" : []
         }
     ]
